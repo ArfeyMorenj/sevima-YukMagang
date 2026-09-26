@@ -5,75 +5,60 @@
 - **Clarity over cleverness** — Information hierarchy drives every decision
 - **Speed** — Minimal clicks to core actions (apply, submit, review)
 - **Trust** — Clean, professional feel; not "AI-generated dashboard"
+- **Approachability** — Warm, human, welcoming — not sterile corporate
 - **Accessibility** — Semantic HTML, proper contrast, keyboard navigation
+- **Mobile-First** — Optimized for mobile devices, which are the primary access point for SMK students
 
 ## Design Direction
 
-**Visual Language:** Clean, restrained, functional
-- No gradients, no glassmorphism, no decorative animations
-- Subtle borders (1px), limited shadows (elevation only for dropdowns/modals)
-- 4px base spacing system
-- Primary color for key actions only
-- Status colors: success (green), warning (amber), destructive (red)
+**Visual Language:** Clean, warm, purposeful — **CareerTech/EdTech startup**
 
-**Typography Scale:**
-- Page title: `text-2xl font-semibold` (24px)
-- Section title: `text-lg font-medium` (18px)
-- Body: `text-base` (16px)
-- Caption: `text-sm text-muted-foreground` (14px)
+- **Brand Color**: Emerald green (#059669) — growth, trust, opportunity
+- **Neutrals**: Warm stone tones — approachable, not sterile
+- **Accent**: Cyan (tech), Amber (energy) — semantic use only
+- **No**: Gradients, glassmorphism, neon, glow, cyberpunk, decorative blobs
+- **Shadows**: Subtle, purposeful (sm for cards, md for dropdowns)
+- **Radius**: 4px (inputs/buttons), 8px (cards), 12px (modals)
+- **Typography**: Geist Sans as primary application font, Geist Mono for technical/code content, fluid headings, 15px base body
 
-**Color Tokens (CSS Variables):**
-```css
-:root {
-  --background: 0 0% 100%;
-  --foreground: 222 47% 11%;
-  --muted: 210 40% 96%;
-  --muted-foreground: 215 16% 47%;
-  --border: 214 32% 91%;
-  --primary: 221 83% 53%;
-  --primary-foreground: 210 40% 98%;
-  --success: 142 76% 36%;
-  --warning: 38 92% 50%;
-  --destructive: 0 84% 60%;
-  --radius: 6px;
-}
-```
+**Brand Personality:**
+> Bright, Optimistic, Trustworthy, Modern, Youthful, Professional, Approachable, Technology-Oriented
 
 ---
 
 ## Navigation
 
-### Student Navigation (Sidebar / Top Bar)
-- Dashboard (overview + recommendations)
-- Jobs (browse + search)
-- Applications (my applications)
-- Portfolio (validated work)
-- Profile (settings)
+### Student Navigation (Sticky Header + Mobile Drawer)
+- **Header**: Brand logo + Nav (Jobs, Applications, Portfolio, Profile) + User Menu
+- **Mobile**: Hamburger → Full-screen drawer
+- **User Menu**: Avatar → Name/Role → Sign Out
 
-### Company Navigation
-- Dashboard (overview + stats)
-- Jobs (manage postings)
-- Applications (review queue)
-- Company Profile
+### Company Navigation (Sticky Header + Mobile Drawer)
+- **Header**: Brand logo + Nav (Dashboard, Jobs, Create Job, Profile) + User Menu
+- **Mobile**: Hamburger → Full-screen drawer
 
-### Auth Pages
-- No navigation — focused, centered forms
+### Auth Pages (Login/Register)
+- **No persistent nav** — focused composition
+- **Layout**: Split two-column on desktop (brand left, form right), stacked on mobile
+- **Left Column**: Brand headline, supporting copy, 3 benefits, subtle visual
+- **Right Column**: Clean form with hierarchy
 
 ---
 
 ## Information Hierarchy
 
 ### Page Level
-1. Page title + primary action (top)
-2. Section groups with section titles
-3. Content cards / tables / forms
-4. Secondary actions (bottom or inline)
+1. **Auth Layout**: Brand area + Form container
+2. **App Layout**: Sticky header + main content
+3. **Page Header**: Title + description + primary action
+4. **Section Groups**: Section header (H2 + description) + content
+5. **Content**: Forms, cards, tables, lists with clear grouping
 
-### Card Level (JobCard, ApplicationCard)
-1. Primary identifier (title, company)
-2. Key metadata (location, deadline, match %)
-3. Skills/tags (visual chips)
-4. Primary action button
+### Card Level (JobCard, ApplicationCard, PortfolioCard)
+1. **Primary Identifier**: Title, Company
+2. **Key Metadata**: Location, Deadline, Match %, Status Badge
+3. **Tags/Chips**: Skills, Technologies (max 3 + count)
+4. **Primary Action**: Button or Link
 
 ---
 
@@ -87,10 +72,65 @@
 | **User** | Student, Company |
 | **Primary Goal** | Login successfully |
 | **Primary Action** | Submit credentials → redirect to role dashboard |
-| **Secondary Actions** | Link to Register, "Forgot password" (future) |
-| **Content Structure** | Centered card: Logo → Title → Email input → Password input → Submit button → Register link |
-| **Important States** | Loading (disabled button), Error (invalid credentials), Empty (initial) |
-| **Responsive** | Full width on mobile, max-w-md centered on desktop |
+| **Secondary Actions** | Link to Register |
+| **Layout** | Two-column desktop (split), stacked mobile |
+| **Form Container** | `max-w-md`, clean surface, no heavy card |
+
+**Desktop Layout (Two-Column Split):**
+```
+┌─────────────────────────────────────────────────────────────┐
+│ LEFT (50%) — Brand Area                                     │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  YukMagang                                          │   │
+│   │                                                     │   │
+│   │  "Cari PKL yang sesuai skill kamu."                │   │
+│   │                                                     │   │
+│   │  Temukan peluang, buktikan kemampuan lewat         │   │
+│   │  study case nyata, dan bangun portfolio            │   │
+│   │  yang tetap bernilai.                              │   │
+│   │                                                     │   │
+│   │  ✓ Skill-based matching                            │   │
+│   │  ✓ Real company study case                         │   │
+│   │  ✓ Portfolio with company feedback                 │   │
+│   │                                                     │   │
+│   │  [Subtle visual: realistic study case preview card] │   │
+│   └─────────────────────────────────────────────────────┘   │
+│ RIGHT (50%) — Form Area                                     │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  Welcome back                                       │   │
+│   │  Sign in to continue                               │   │
+│   │                                                     │   │
+│   │  [Email input]                                     │   │
+│   │  [Password input + show/hide]                      │   │
+│   │                                                     │   │
+│   │  [Sign in] ← Primary button, full width            │   │
+│   │                                                     │   │
+│   │  Don't have an account? [Create one]               │   │
+│   └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Mobile Layout (Stacked):**
+- Brand area condensed at top
+- Form below, full width
+
+**Form Fields:**
+- Email (input, required, email type, autocomplete)
+- Password (input, required, show/hide toggle, autocomplete)
+- Submit Button (primary, full width, "Sign in")
+
+**States:**
+- **Empty**: Clean form
+- **Loading**: Button disabled, spinner, "Signing in..."
+- **Error**: Inline field errors + toast (destructive)
+- **Success**: Redirect with router.refresh()
+
+**Responsive:**
+- Desktop: Two-column split (50/50), min-height 100vh
+- Tablet: Stacked, centered, max-w-xl
+- Mobile: Stacked, full width, px-4
+
+---
 
 ### 2. Register Page (`/register`)
 
@@ -99,94 +139,59 @@
 | **Purpose** | Create new account |
 | **User** | Student, Company |
 | **Primary Goal** | Register and auto-login |
-| **Primary Action** | Submit form → create account → redirect to profile setup |
-| **Secondary Actions** | Role toggle (Student/Company), Link to Login |
-| **Content Structure** | Role selector tabs → Form fields (email, password, confirm) → Submit |
-| **Important States** | Validation (email format, password min 8, match), Error (email exists), Loading |
-| **Responsive** | Same as Login |
+| **Primary Action** | Submit form → create account → redirect to profile |
+| **Secondary Actions** | Link to Login |
+| **Layout** | Two-column desktop (split), stacked mobile |
 
-### 3. Student Dashboard (`/student`)
+**Desktop Layout (Two-Column Split):**
+```
+┌─────────────────────────────────────────────────────────────┐
+│ LEFT (50%) — Brand Area (same as Login)                     │
+│ RIGHT (50%) — Form Area                                     │
+│   ┌─────────────────────────────────────────────────────┐   │
+│   │  Create an account                                  │   │
+│   │  Join YukMagang to find your perfect PKL           │   │
+│   │                                                     │   │
+│   │  I am a [Student] [Company]  ← Segmented control   │   │
+│   │                                                     │   │
+│   │  [Full Name input]                                 │   │
+│   │  [Email input]                                     │   │
+│   │  [Password input + strength]                       │   │
+│   │  [Confirm Password input]                          │   │
+│   │  [Major select] — only if Student                  │   │
+│   │                                                     │   │
+│   │  [Create account] ← Primary button, full width     │   │
+│   │                                                     │   │
+│   │  Already have an account? [Sign in]                │   │
+│   └─────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────┘
+```
 
-| Property | Value |
-|----------|-------|
-| **Purpose** | Overview + recommended jobs |
-| **User** | Student |
-| **Primary Goal** | See match recommendations, quick actions |
-| **Primary Action** | "Browse All Jobs" → /student/jobs |
-| **Secondary Actions** | "Complete Profile" (if incomplete), View Application Status |
-| **Content Structure** | Header (welcome, profile completion %) → Recommended Jobs (top 3 match cards) → My Applications summary (counts by status) → Quick links |
-| **Important States** | Empty (no recommendations), Loading skeletons, Profile incomplete banner |
-| **Responsive** | Stack sections vertically on mobile |
+**Role Selector:**
+- Segmented control (two equal-width buttons)
+- Active state: brand background, brand foreground
+- Inactive state: muted background, muted foreground
+- Animated transition between states
 
-### 4. Jobs List (`/student/jobs`)
+**Form Fields:**
+- Full Name (input, required)
+- Email (input, required, email type)
+- Password (input, required, min 8, strength indicator)
+- Confirm Password (input, required, match validation)
+- Major (select, required, ONLY if Student role)
+  - Options: RPL, TKJ, PPLG, Other
 
-| Property | Value |
-|----------|-------|
-| **Purpose** | Browse and filter PKL opportunities |
-| **User** | Student |
-| **Primary Goal** | Find relevant jobs to apply |
-| **Primary Action** | Click job → Job Detail |
-| **Secondary Actions** | Filter by major/skills (future), Sort by match/date |
-| **Content Structure** | Header (title, count) → Job Grid (JobCard × N) → Pagination |
-| **JobCard Content** | Company logo/name, Job title, Match badge (XX%), Location, Tech stack tags (3 max + count), Deadline, "View Details" button |
-| **Important States** | Empty (no jobs match), Loading grid, Error |
-| **Responsive** | 1 col mobile, 2 col tablet, 3 col desktop |
+**States:**
+- **Role Switch**: Animated transition, Major field appears/disappears smoothly
+- **Validation**: Inline per-field (Zod), password strength visual
+- **Loading**: Button disabled, "Creating account..."
+- **Error**: Field errors + toast
 
-### 5. Job Detail (`/student/jobs/[id]`)
+**Responsive:** Same as Login
 
-| Property | Value |
-|----------|-------|
-| **Purpose** | Full job info + study case + apply |
-| **User** | Student |
-| **Primary Goal** | Decide and apply |
-| **Primary Action** | "Apply Now" (if not applied) / "View Application" (if applied) |
-| **Secondary Actions** | Save for later (future), Share |
-| **Content Structure** | Hero: Company, Title, Match %, Location, Deadline → Tabs: Overview / Study Case / Requirements → Apply CTA (sticky bottom on mobile) |
-| **Study Case Tab** | Title, Problem Description, Instructions, Required Skills, Deadline |
-| **Requirements Tab** | Required skills (chips), Tech stack (chips), Major preference |
-| **Important States** | Already applied (show status), Application deadline passed (disabled), Loading |
-| **Responsive** | Tabs collapse to accordion on mobile |
+---
 
-### 6. Application Detail (`/student/applications/[id]`)
-
-| Property | Value |
-|----------|-------|
-| **Purpose** | Track application status + submission + review |
-| **User** | Student |
-| **Primary Goal** | See current status, submit study case if pending, view review if reviewed |
-| **Primary Action** | "Submit Study Case" (if PENDING) / "View Portfolio" (if REVIEWED) |
-| **Secondary Actions** | Withdraw application (if PENDING) |
-| **Content Structure** | Status badge + timeline (Applied → Submitted → Reviewed → Decided) → Job summary → Submission form (if PENDING) → Review result (if REVIEWED: score, feedback, decision) |
-| **Important States** | PENDING (show submit form), SUBMITTED (read-only), REVIEWED (show review + portfolio link) |
-| **Responsive** | Timeline vertical on mobile |
-
-### 7. Study Case Submission (`/student/applications/[id]/submit`)
-
-| Property | Value |
-|----------|-------|
-| **Purpose** | Submit study case solution |
-| **User** | Student |
-| **Primary Goal** | Complete submission |
-| **Primary Action** | "Submit Solution" |
-| **Content Structure** | Job context header → Form: Repository URL (required), Deployed URL (optional), Explanation (textarea, required) → Submit |
-| **Validation** | Repo URL required, valid URL format, Explanation min 50 chars |
-| **Important States** | Validating, Submitting, Success (redirect to application), Error |
-| **Responsive** | Full width form |
-
-### 8. Portfolio (`/student/portfolio`)
-
-| Property | Value |
-|----------|-------|
-| **Purpose** | Showcase validated work |
-| **User** | Student |
-| **Primary Goal** | View and share portfolio items |
-| **Primary Action** | "View Details" per item |
-| **Content Structure** | Header (title, count) → Portfolio Grid (PortfolioCard × N) |
-| **PortfolioCard Content** | Study case title, Company name, Technologies (chips), Score badge (XX/100), Result badge (Accepted/Rejected), Repo link, Deployed link, "View Details" |
-| **Important States** | Empty (no reviews yet → CTA to browse jobs), Loading |
-| **Responsive** | 1 col mobile, 2 col desktop |
-
-### 9. Student Profile (`/student/profile`)
+### 3. Student Profile (`/student/profile`)
 
 | Property | Value |
 |----------|-------|
@@ -194,142 +199,160 @@
 | **User** | Student |
 | **Primary Goal** | Keep profile updated for better matching |
 | **Primary Action** | "Save Changes" |
-| **Content Structure** | Section: Basic Info (name, major, bio) → Section: Skills (multi-select with search, selected as chips) → Save button |
-| **Important States** | Saving, Saved toast, Validation errors |
-| **Responsive** | Stack sections |
+| **Layout** | `StudentLayout` with sticky header |
 
-### 10. Company Dashboard (`/company`)
+**Content Structure:**
+```
+Sticky Header
+  ├─ Brand Logo
+  ├─ Nav: Jobs · Applications · Portfolio · Profile
+  └─ User Menu: Avatar → Name, Major → Sign Out
 
-| Property | Value |
-|----------|-------|
-| **Purpose** | Overview of jobs + applications needing review |
-| **User** | Company |
-| **Primary Goal** | Quick access to pending reviews |
-| **Primary Action** | "Review" on pending applications |
-| **Secondary Actions** | "Create Job", "Manage Jobs" |
-| **Content Structure** | Header → Stats cards (Active Jobs, Total Applicants, Pending Reviews) → Pending Reviews table (top 5) → Recent Jobs list |
-| **Important States** | Empty (no jobs), Loading |
-| **Responsive** | Table → cards on mobile |
+Main (container-form py-12 px-4 md:py-16 md:px-8)
+  ├─ PageHeader
+  │   ├─ H1 "Profile"
+  │   └─ Subtitle: "Manage your profile and skills for better job matching"
+  │
+  ├─ FormSection: "Basic Information"
+  │   ├─ Description: "This helps companies find you"
+  │   ├─ Full Name (input, required)
+  │   ├─ Major (Select: RPL/TKJ/PPLG/OTHER, required)
+  │   ├─ Bio (textarea, max 500, char counter)
+  │   └─ Save Button (primary)
+  │
+  └─ FormSection: "Skills"
+      ├─ Description: "8/20 skills added · Add more for better matches"
+      ├─ SkillPicker
+      │   ├─ Search Input (filters available skills)
+      │   ├─ Categorized Dropdown (checkbox multi-select)
+      │   └─ Selected as Chips (removable)
+      └─ Current Skills (chips with remove button)
+          └─ Chip: bg-brand-100 text-brand-700 border-brand-200
+```
 
-### 11. Company Jobs (`/company/jobs`)
+**SkillPicker Behavior:**
+- Search input filters available skills in real-time
+- Skills grouped by category in dropdown
+- Checkbox multi-select for bulk adding
+- Selected skills appear as removable chips above
+- Chip: `bg-brand-100 text-brand-700 border-brand-200` with remove button
 
-| Property | Value |
-|----------|-------|
-| **Purpose** | Manage job postings |
-| **User** | Company |
-| **Primary Goal** | View, edit, create jobs |
-| **Primary Action** | "Create Job" |
-| **Secondary Actions** | Edit, Delete, View Applicants per job |
-| **Content Structure** | Header + Create button → Job Table: Title, Status, Applicants, Deadline, Actions |
-| **Important States** | Empty, Loading |
-| **Responsive** | Table with horizontal scroll on mobile |
+**Current Skills Display:**
+- Flex wrap gap-2
+- Each skill as pill with remove button
+- Hover: slight background change
+- Focus: visible ring
 
-### 12. Create Job (`/company/jobs/create`)
+**States:**
+- **Saving**: Button loading, disabled
+- **Saved**: Toast success, revalidate
+- **Error**: Toast error + inline field errors
+- **Skill Search**: Debounced, categorized results
+- **Empty Skills**: "No skills added yet. Add skills from the picker above."
 
-| Property | Value |
-|----------|-------|
-| **Purpose** | Create new PKL opportunity + study case |
-| **User** | Company |
-| **Primary Goal** | Publish complete job with study case |
-| **Primary Action** | "Publish Job" |
-| **Content Structure** | Multi-step or single long form: Basic Info (title, description, location, deadline) → Requirements (skills multi-select, tech stack tags) → Study Case (title, problem, instructions, required skills, deadline) → Publish |
-| **Validation** | All required fields, deadline future, study case deadline ≤ job deadline |
-| **Important States** | Saving draft (future), Publishing, Success redirect |
-| **Responsive** | Stack sections |
-
-### 13. Applicant Detail (`/company/jobs/[id]/applicants`)
-
-| Property | Value |
-|----------|-------|
-| **Purpose** | List applicants for a job |
-| **User** | Company |
-| **Primary Goal** | Review submissions |
-| **Primary Action** | Click applicant → Submission Review |
-| **Content Structure** | Job header → Applicant Table: Student name, Major, Match %, Status, Applied date, Actions |
-| **Important States** | Empty (no applicants), Loading |
-| **Responsive** | Table → cards |
-
-### 14. Submission Review (`/company/applications/[id]/review`)
-
-| Property | Value |
-|----------|-------|
-| **Purpose** | Review student submission, give feedback |
-| **User** | Company |
-| **Primary Goal** | Score, feedback, accept/reject |
-| **Primary Action** | "Submit Review" |
-| **Content Structure** | Student info + Job context → Submission details (repo, deployed, explanation) → Review form: Score (0-100 slider/input), Feedback (textarea, required), Decision (radio: Accept/Reject) → Submit |
-| **Validation** | Score required, Feedback required, Decision required |
-| **Important States** | Submitting, Success (redirect to applicants), Error |
-| **Responsive** | Stack sections |
-
-### 15. Company Profile (`/company/profile`)
-
-| Property | Value |
-|----------|-------|
-| **Purpose** | Manage company info |
-| **User** | Company |
-| **Primary Goal** | Keep company profile accurate |
-| **Primary Action** | "Save Changes" |
-| **Content Structure** | Name, Description, Location, Website, Verified badge (read-only) → Save |
-| **Important States** | Saving, Saved |
+**Responsive:**
+- Mobile: Stack sections, full-width form, chips wrap
+- Desktop: Same, max-w-xl centered
 
 ---
 
 ## Loading States
 
-- **Page level:** Skeleton screens matching final layout (shimmer on background)
-- **Button level:** Disabled + spinner
-- **List level:** 3-5 skeleton cards
-- **Never** full-page spinner blocking navigation
+| Level | Pattern |
+|-------|---------|
+| **Page** | Skeleton matching final layout (shimmer `base-200` → `base-100`) |
+| **Button** | Disabled + `Spinner sm` + "Saving..." |
+| **List/Grid** | 3-5 Skeleton cards |
+| **Form** | Disabled inputs, no skeleton |
+| **Never** | Full-page spinner blocking navigation |
 
 ---
 
 ## Empty States
 
-| Page | Empty Message | Action |
-|------|---------------|--------|
-| Jobs | "No PKL opportunities match your profile yet" | "Browse all jobs" |
-| Applications | "You haven't applied to any positions" | "Find opportunities" |
-| Portfolio | "Your portfolio will appear here after company reviews" | "Apply to jobs" |
-| Company Jobs | "You haven't posted any PKL opportunities" | "Create your first job" |
-| Applicants | "No applications yet for this position" | — |
+| Page | Illustration | Message | Action |
+|------|--------------|---------|--------|
+| Jobs | 📭 | "No PKL opportunities match your profile yet" | "Complete your profile" → `/student/profile` |
+| Applications | 📄 | "You haven't applied to any positions" | "Find opportunities" → `/student/jobs` |
+| Portfolio | 🎨 | "Your portfolio will appear here after company reviews" | "Apply to jobs" → `/student/jobs` |
+| Company Jobs | 🏢 | "You haven't posted any PKL opportunities" | "Create your first job" → `/company/jobs/create` |
+| Applicants | 👥 | "No applications yet for this position" | — |
+| Skills (Profile) | 🏷️ | "No skills added yet" | "Add skills" (scroll to picker) |
 
 ---
 
 ## Error States
 
-- **Form validation:** Inline field errors + toast on submit failure
-- **Server errors:** Toast with "Something went wrong. Please try again."
-- **Not found:** 404 page with link to dashboard
-- **Unauthorized:** Redirect to login with return URL
+- **Field Validation**: Inline below input (red text, `text-destructive`), `aria-describedby`
+- **Form Submit**: Toast (destructive) + preserve input
+- **Server Error**: Toast "Something went wrong. Please try again."
+- **Not Found**: 404 page with illustration + "Back to Dashboard"
+- **Unauthorized**: Redirect to `/login?callbackUrl=...`
+- **Forbidden**: Toast "You don't have permission" + redirect
 
 ---
 
 ## Responsive Behavior
 
-- **Mobile (< 640px):** Single column, stacked sections, bottom-sheet modals, sticky primary action
-- **Tablet (640-1024px):** Two-column grids, side-by-side forms
-- **Desktop (> 1024px):** Three-column grids, sidebar navigation, full-width tables
-- **Breakpoints:** Tailwind defaults (sm, md, lg, xl)
+- **Mobile (< 640px)**: Single column, stacked sections, sticky CTA bottom
+- **Tablet (640-1024px)**: Two-column grids, side-by-side forms
+- **Desktop (> 1024px)**: Full layout, max-width containers
+- **Breakpoints**: Tailwind defaults (sm, md, lg, xl)
 
 ---
 
-## Component List (Reusable)
+## Component List (Reusable) — For This Phase
 
-1. **Button** — primary, secondary, ghost, destructive, loading, disabled
-2. **Input** — text, email, password, URL, with label + error
-3. **Textarea** — with label, error, character count
-4. **Select** — single, multi-select with chips
-5. **Badge** — default, success, warning, destructive, outline
-6. **Card** — container with padding, border
-7. **JobCard** — job preview with match badge
-8. **SkillChip** — skill tag with category color
-9. **StatusBadge** — PENDING/REVIEWED/ACCEPTED/REJECTED
-10. **Dialog/Modal** — confirm actions, forms
-11. **Table** — sortable, responsive
-12. **Tabs** — keyboard accessible
-13. **Timeline** — application status steps
-14. **EmptyState** — illustration + message + action
-15. **Toast** — success, error, info
-16. **Avatar** — initials or logo
-17. **Breadcrumb** — navigation context
+### Base UI (`components/ui/`)
+1. **Button** — primary, secondary, outline, ghost, destructive, success, loading, disabled
+2. **Input** — text, email, password, url, with label + error + hint
+3. **Textarea** — with label, error, hint, char counter
+4. **Select** — single, searchable
+5. **RadioGroup** — default, card variant (for role selector)
+6. **Label** — required indicator
+7. **Card** — default, bordered
+8. **Badge** — default, success, warning, destructive, outline, brand
+9. **Avatar** — sm, md, lg, fallback initials
+10. **Spinner** — sm, md, lg
+11. **Separator** — horizontal, vertical
+12. **FormField** — label + input + error + hint wrapper
+13. **FormSection** — header (title + description) + content
+14. **PageHeader** — title + description + actions
+15. **AuthLayout** — two-column split layout
+15. **StudentLayout** — sticky header + content
+16. **SkillChip** — removable, category color
+17. **StatusBadge** — PENDING/REVIEWED/ACCEPTED/REJECTED
+18. **PageHeader** — title + description + actions
+19. **SectionHeader** — H2/H3 + description + secondary action
+
+### Domain Components
+- `SkillChip` — removable skill tag with category color
+- `SkillPicker` — searchable multi-select with chips
+
+---
+
+## Accessibility Checklist
+
+- [ ] All inputs have associated `<label>` (via `FormField`)
+- [ ] Error messages linked with `aria-describedby`
+- [ ] Focus visible: `focus-visible:ring-2 focus-visible:ring-ring`
+- [ ] Color contrast ≥ 4.5:1 (text), 3:1 (UI)
+- [ ] Keyboard: Tab, Enter, Escape, Arrow keys
+- [ ] ARIA labels on icon-only buttons
+- [ ] Live regions: `aria-live="polite"` for toasts
+- [ ] Heading hierarchy: h1 → h2 → h3
+- [ ] Skip to main content link
+
+---
+
+## Implementation Notes
+
+### CSS Variables in globals.css
+All tokens defined as HSL for Tailwind v4 `@theme inline` compatibility.
+
+### Migration Path
+1. Update `globals.css` with new tokens
+2. Create base components in `components/ui/`
+3. Redesign `/login` and `/register` first (highest impact)
+4. Redesign `/student/profile` with new `FormSection` + `SkillPicker`
+5. Validate with `npm run lint && npx tsc --noEmit && npm run build`

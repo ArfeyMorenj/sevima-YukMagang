@@ -1,4 +1,4 @@
-import { PrismaClient, Role, Major, SkillCategory, ApplicationStatus, Decision } from '../node_modules/.prisma/client/client.js'
+import { PrismaClient, Role, Major, SkillCategory, ApplicationStatus, Decision } from '../app/generated/prisma/client'
 import { PrismaPg } from '@prisma/adapter-pg'
 import bcrypt from 'bcryptjs'
 
