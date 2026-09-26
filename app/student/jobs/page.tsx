@@ -1,7 +1,8 @@
-﻿import { getStudentProfile } from '@/lib/proxy'
+import { getStudentProfile } from '@/lib/proxy'
 import { prisma } from '@/lib/prisma'
 import { StudentLayout } from '@/components/layout/StudentLayout'
 import { JobsList } from './JobsList'
+import { calculateMatch } from '@/lib/matching'
 
 export const dynamic = 'force-dynamic'
 
@@ -10,7 +11,10 @@ export default async function StudentJobsPage() {
   const student = session.studentProfile
 
   const studentSkillIds = student.skills.map((s) => s.skill.id)
-  const studentSkillSet = new Set(studentSkillIds)
+  const studentMatchProfile = {
+    major: student.major,
+    skills: student.skills.map((s) => ({ name: s.skill.name })),
+  }
 
   // Fetch all jobs with relations
   const rawJobs = await prisma.job.findMany({
@@ -43,36 +47,57 @@ export default async function StudentJobsPage() {
     },
   })
 
-  // Format and deterministically sort by relevance (matched skill count descending, then deadline)
-  const formattedJobs = rawJobs.map((job) => ({
-    id: job.id,
-    title: job.title,
-    location: job.location,
-    applicationDeadline: job.applicationDeadline.toISOString(),
-    company: {
-      name: job.company.name,
-      verified: job.company.verified,
-    },
-    skills: job.skills.map((s) => ({
+  // Format and deterministically compute matching score using calculateMatch
+  const formattedJobs = rawJobs.map((job) => {
+    const jobSkills = job.skills.map((s) => ({
       id: s.skill.id,
       name: s.skill.name,
-    })),
-    techStack: job.techStack,
-    studyCase: job.studyCase
-      ? {
-          title: job.studyCase.title,
-          deadline: job.studyCase.deadline.toISOString(),
-        }
-      : null,
-  }))
+    }))
 
-  // Sort: jobs with more matched skills first, then non-expired first
-  formattedJobs.sort((a, b) => {
-    const aMatches = a.skills.filter((s) => studentSkillSet.has(s.id)).length
-    const bMatches = b.skills.filter((s) => studentSkillSet.has(s.id)).length
-    if (bMatches !== aMatches) {
-      return bMatches - aMatches
+    // Calculate match using pure deterministic matching engine
+    const match = calculateMatch(studentMatchProfile, {
+      skills: jobSkills,
+      techStack: job.techStack,
+    })
+
+    return {
+      id: job.id,
+      title: job.title,
+      location: job.location,
+      applicationDeadline: job.applicationDeadline.toISOString(),
+      company: {
+        name: job.company.name,
+        verified: job.company.verified,
+      },
+      skills: jobSkills,
+      techStack: job.techStack,
+      studyCase: job.studyCase
+        ? {
+            title: job.studyCase.title,
+            deadline: job.studyCase.deadline.toISOString(),
+          }
+        : null,
+      matchPercentage: match.percentage,
+      matchedSkillNames: match.matchedSkills,
+      majorMatches: match.majorMatches,
     }
+  })
+
+  // Deterministic sort: Active jobs with highest match percentage first
+  const now = new Date().getTime()
+  formattedJobs.sort((a, b) => {
+    const aExpired = new Date(a.applicationDeadline).getTime() < now
+    const bExpired = new Date(b.applicationDeadline).getTime() < now
+
+    if (aExpired !== bExpired) {
+      return aExpired ? 1 : -1 // Active jobs first
+    }
+
+    // Match percentage descending
+    if (b.matchPercentage !== a.matchPercentage) {
+      return b.matchPercentage - a.matchPercentage
+    }
+
     return new Date(b.applicationDeadline).getTime() - new Date(a.applicationDeadline).getTime()
   })
 

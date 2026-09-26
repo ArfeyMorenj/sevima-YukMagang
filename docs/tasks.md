@@ -217,36 +217,36 @@
 
 ---
 
-## Phase 8 — Company Review [COMPLETED]
+## Phase 8 — Company Review
 
-### [P0] Build Applicant List (/company/jobs/[id]/applicants) [DONE]
-- **Goal:** List of applicants with status, registered skills, submission state, review action
+### [P0] Build Applicant List (/company/jobs/[id]/applicants)
+- **Goal:** Table of applicants with status, match %, actions
 - **Dependency:** Jobs with applications
-- **Definition of Done:** Lists company's applicants, verifies company ownership, links to review page
+- **Definition of Done:** Lists all, links to review page
 
-### [P0] Build Submission Review page (/company/applications/[id]/review) [DONE]
-- **Goal:** View student identity, job, study case, submission details, score input, feedback textarea, decision cards
+### [P0] Build Submission Review page (/company/applications/[id]/review)
+- **Goal:** View submission, score input, feedback textarea, accept/reject radio
 - **Dependency:** Applications with submissions
-- **Definition of Done:** Shows repo, deployed, explanation; form submits review, pre-fills existing review
+- **Definition of Done:** Shows repo, deployed, explanation; form submits review
 
-### [P0] Create reviewApplication Server Action [DONE]
+### [P0] Create reviewApplication Server Action
 - **Goal:** Create Review, update Application status, create PortfolioItem
-- **Dependency:** Company owns job, application exists, submission exists
-- **Definition of Done:** Transactional: Review + Application status + PortfolioItem all created atomically; score 0-100 validated
+- **Dependency:** Company owns job, application exists
+- **Definition of Done:** Transactional: Review + Application status + PortfolioItem all created; score 0-100 validated
 
 ---
 
-## Phase 9 — Portfolio [COMPLETED]
+## Phase 9 — Portfolio
 
-### [P0] Build Portfolio page (/student/portfolio) [DONE]
-- **Goal:** Grid of PortfolioCards with all required verified evidence fields
+### [P0] Build Portfolio page (/student/portfolio)
+- **Goal:** Grid of PortfolioCards with all required fields
 - **Dependency:** reviewApplication creates PortfolioItem
-- **Definition of Done:** Shows study case title, company, technologies, repo, deployed, score, feedback, result badge, empty state
+- **Definition of Done:** Shows study case title, company, technologies, repo, deployed, score, feedback, result badge
 
-### [P0] Verify rejected applications create portfolio [DONE]
+### [P0] Verify rejected applications create portfolio
 - **Goal:** Core differentiator works
 - **Dependency:** reviewApplication
-- **Definition of Done:** Reject decision still creates PortfolioItem with result=REJECTED (verified evidence)
+- **Definition of Done:** Reject decision still creates PortfolioItem with result=REJECTED
 
 ---
 

@@ -4,6 +4,7 @@ import { getStudentProfile } from '@/lib/proxy'
 import { prisma } from '@/lib/prisma'
 import { StudentLayout } from '@/components/layout/StudentLayout'
 import { ApplyButton } from '@/components/job/ApplyButton'
+import { calculateMatch } from '@/lib/matching'
 import {
   ArrowLeft,
   Building2,
@@ -14,6 +15,7 @@ import {
   Globe,
   Briefcase,
   AlertTriangle,
+  Target,
 } from 'lucide-react'
 
 export const dynamic = 'force-dynamic'
@@ -25,7 +27,14 @@ interface JobDetailPageProps {
 }
 
 export default async function StudentJobDetailPage({ params }: JobDetailPageProps) {
-  const { id } = await params
+  const resolvedParams = await params
+  const rawId = resolvedParams?.id
+  const id = typeof rawId === 'string' ? decodeURIComponent(rawId).trim() : ''
+
+  if (!id) {
+    notFound()
+  }
+
   const session = await getStudentProfile()
   const student = session.studentProfile
 
@@ -64,6 +73,18 @@ export default async function StudentJobDetailPage({ params }: JobDetailPageProp
   if (!job) {
     notFound()
   }
+
+  // Calculate deterministic match score
+  const match = calculateMatch(
+    {
+      major: student.major,
+      skills: student.skills.map((s) => ({ name: s.skill.name })),
+    },
+    {
+      skills: job.skills.map((s) => ({ name: s.skill.name })),
+      techStack: job.techStack,
+    }
+  )
 
   // Check if student has already applied
   const existingApplication = await prisma.application.findUnique({
@@ -120,15 +141,25 @@ export default async function StudentJobDetailPage({ params }: JobDetailPageProp
         {/* Job Identity Card */}
         <div className="bg-card border border-border rounded-lg p-6 sm:p-8 shadow-xs space-y-4">
           <div>
-            <div className="flex items-center gap-2 flex-wrap mb-2">
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-full border border-brand-200">
-                <Building2 className="w-3.5 h-3.5" />
-                {job.company.name}
-              </span>
-              {job.company.verified && (
-                <span className="inline-flex items-center gap-1 text-tiny text-brand-600 font-medium bg-brand-50 px-2 py-0.5 rounded-full border border-brand-200">
-                  <CheckCircle2 className="w-3 h-3" />
-                  Perusahaan Terverifikasi
+            <div className="flex items-center justify-between gap-2 flex-wrap mb-2">
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-brand-700 bg-brand-50 px-2.5 py-0.5 rounded-full border border-brand-200">
+                  <Building2 className="w-3.5 h-3.5" />
+                  {job.company.name}
+                </span>
+                {job.company.verified && (
+                  <span className="inline-flex items-center gap-1 text-tiny text-brand-600 font-medium bg-brand-50 px-2 py-0.5 rounded-full border border-brand-200">
+                    <CheckCircle2 className="w-3 h-3" />
+                    Perusahaan Terverifikasi
+                  </span>
+                )}
+              </div>
+
+              {/* Factual Match Percentage */}
+              {match.percentage > 0 && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-brand-50 text-brand-800 border border-brand-200">
+                  <Target className="w-3.5 h-3.5 text-brand-600" />
+                  Kecocokan Profil: {match.percentage}%
                 </span>
               )}
             </div>
@@ -186,6 +217,7 @@ export default async function StudentJobDetailPage({ params }: JobDetailPageProp
             {totalSkillsCount > 0 && studentSkillIds.length > 0 && (
               <span className="text-xs font-semibold text-brand-700 bg-brand-50 px-2.5 py-1 rounded-md border border-brand-200 self-start sm:self-auto">
                 {matchedSkillsCount} dari {totalSkillsCount} keahlian cocok dengan profilmu
+                {match.majorMatches && ' • Jurusan Sesuai'}
               </span>
             )}
           </div>
@@ -202,7 +234,7 @@ export default async function StudentJobDetailPage({ params }: JobDetailPageProp
                       key={s.skill.id}
                       className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${
                         isMatched
-                          ? 'bg-brand-50 text-brand-800 border-brand-200'
+                          ? 'bg-brand-50 text-brand-800 border-brand-200 font-semibold'
                           : 'bg-base-100 text-base-700 border-base-200'
                       }`}
                     >
@@ -233,7 +265,7 @@ export default async function StudentJobDetailPage({ params }: JobDetailPageProp
           )}
         </section>
 
-        {/* Study Case Section — CORE DIFFERENTIATOR */}
+        {/* Study Case Section • CORE DIFFERENTIATOR */}
         <section
           aria-labelledby="case-heading"
           className="bg-card border-l-4 border-l-brand-600 border border-border rounded-lg p-6 sm:p-8 shadow-xs space-y-5"

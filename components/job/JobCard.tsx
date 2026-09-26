@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { MapPin, Calendar, CheckCircle2, FileCode, ArrowRight } from 'lucide-react'
+import { MapPin, Calendar, CheckCircle2, FileCode, ArrowRight, Target } from 'lucide-react'
 
 export interface JobCardProps {
   id: string
@@ -20,6 +20,9 @@ export interface JobCardProps {
     deadline: string | Date
   } | null
   studentSkillIds?: string[]
+  matchPercentage?: number
+  matchedSkillNames?: string[]
+  majorMatches?: boolean
 }
 
 export function JobCard({
@@ -32,6 +35,9 @@ export function JobCard({
   techStack,
   studyCase,
   studentSkillIds = [],
+  matchPercentage,
+  matchedSkillNames = [],
+  majorMatches,
 }: JobCardProps) {
   const deadlineDate = new Date(applicationDeadline)
   const isExpired = deadlineDate < new Date()
@@ -41,30 +47,46 @@ export function JobCard({
     year: 'numeric',
   })
 
-  // Calculate real skill match overlap (NO fake percentage)
+  // Calculate real skill match overlap
   const studentSkillSet = new Set(studentSkillIds)
   const matchedSkillsCount = skills.filter((s) => studentSkillSet.has(s.id)).length
   const totalSkillsCount = skills.length
 
+  const matchedNameSet = new Set(matchedSkillNames.map((n) => n.toLowerCase().trim()))
+
   return (
     <article className="bg-card border border-border rounded-lg p-5 sm:p-6 shadow-xs hover:border-brand-300 hover:shadow-sm transition-all flex flex-col justify-between">
       <div className="space-y-4">
-        {/* Header: Company & Title */}
+        {/* Header: Company, Match Badge & Title */}
         <div>
-          <div className="flex items-center gap-2 flex-wrap mb-1.5">
-            <span className="text-xs font-semibold text-brand-700 tracking-wide uppercase">
-              {company.name}
-            </span>
-            {company.verified && (
-              <span className="inline-flex items-center gap-1 text-tiny text-brand-600 font-medium bg-brand-50 px-2 py-0.5 rounded-full border border-brand-200">
-                <CheckCircle2 className="w-3 h-3" />
-                Terverifikasi
+          <div className="flex items-center justify-between gap-2 flex-wrap mb-1.5">
+            <div className="flex items-center gap-2 flex-wrap">
+              <span className="text-xs font-semibold text-brand-700 tracking-wide uppercase">
+                {company.name}
+              </span>
+              {company.verified && (
+                <span className="inline-flex items-center gap-1 text-tiny text-brand-600 font-medium bg-brand-50 px-2 py-0.5 rounded-full border border-brand-200">
+                  <CheckCircle2 className="w-3 h-3" />
+                  Terverifikasi
+                </span>
+              )}
+            </div>
+
+            {/* Factual Deterministic Match Badge */}
+            {matchPercentage !== undefined && matchPercentage > 0 && (
+              <span
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-tiny font-bold bg-brand-50 text-brand-800 border border-brand-200"
+                title={`Kalkulasi kecocokan: Keahlian (70%) + Kesesuaian Jurusan (30%)`}
+              >
+                <Target className="w-3 h-3 text-brand-600" />
+                Kecocokan: {matchPercentage}%
               </span>
             )}
           </div>
+
           <h2 className="text-lg sm:text-xl font-bold text-foreground leading-snug">
             <Link
-              href={`/student/jobs/${id}`}
+              href={`/student/jobs/${encodeURIComponent(id)}`}
               className="hover:text-brand-600 transition-colors focus-visible:outline-hidden focus-visible:ring-2 focus-visible:ring-ring rounded-xs"
             >
               {title}
@@ -114,23 +136,26 @@ export function JobCard({
                 {studentSkillIds.length > 0 && (
                   <span className="font-semibold text-brand-700">
                     {matchedSkillsCount}/{totalSkillsCount} skill kamu cocok
+                    {majorMatches && ' • Jurusan Sesuai'}
                   </span>
                 )}
               </div>
               <div className="flex flex-wrap gap-1.5" role="list" aria-label="Keahlian yang dibutuhkan">
                 {skills.map((skill) => {
-                  const isMatched = studentSkillSet.has(skill.id)
+                  const isMatched =
+                    studentSkillSet.has(skill.id) ||
+                    matchedNameSet.has(skill.name.toLowerCase().trim())
                   return (
                     <span
                       key={skill.id}
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-tiny font-medium border ${
                         isMatched
-                          ? 'bg-brand-50 text-brand-800 border-brand-200'
+                          ? 'bg-brand-50 text-brand-800 border-brand-200 font-semibold'
                           : 'bg-base-100 text-base-700 border-base-200'
                       }`}
                     >
                       {skill.name}
-                      {isMatched && <span className="ml-1 text-brand-600 font-bold">✓</span>}
+                      {isMatched && <span className="ml-1 text-brand-600 font-bold">?</span>}
                     </span>
                   )
                 })}
@@ -160,7 +185,7 @@ export function JobCard({
       {/* Primary Action Button */}
       <div className="pt-4 mt-4 border-t border-border flex items-center justify-between">
         <Link
-          href={`/student/jobs/${id}`}
+          href={`/student/jobs/${encodeURIComponent(id)}`}
           className="inline-flex items-center justify-center gap-1.5 w-full sm:w-auto px-4 py-2 rounded-md bg-brand-600 hover:bg-brand-700 text-white text-xs font-semibold shadow-xs transition-colors focus-visible:ring-2 focus-visible:ring-ring"
         >
           Lihat Detail & Kerjakan Case
