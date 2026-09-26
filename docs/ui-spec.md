@@ -1,4 +1,4 @@
-# PKL Platform — UI Specification
+# YukMagang — UI Specification
 
 ## Design Goals
 

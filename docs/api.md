@@ -1,4 +1,4 @@
-# PKL Platform — API Specification
+# YukMagang — API Specification
 
 ## Server Actions (Mutations)
 

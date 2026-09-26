@@ -8,10 +8,10 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# AGENTS.md — PKL Platform Coding Agent Instructions
+# AGENTS.md — YukMagang Coding Agent Instructions
 
 ## Purpose
-This file instructs AI coding agents on how to work on the PKL Platform hackathon MVP. Follow these rules strictly.
+This file instructs AI coding agents on how to work on the YukMagang hackathon MVP. Follow these rules strictly.
 
 ---
 

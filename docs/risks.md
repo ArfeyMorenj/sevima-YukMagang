@@ -1,4 +1,4 @@
-# PKL Platform — Risk Register
+# YukMagang — Risk Register
 
 ## Risk Assessment Matrix
 

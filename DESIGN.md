@@ -1,4 +1,4 @@
-# PKL Platform — DESIGN.md
+# YukMagang — DESIGN.md
 
 ## Design Tokens
 

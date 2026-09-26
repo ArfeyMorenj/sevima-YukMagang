@@ -1,13 +1,224 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  output   = "../node_modules/.prisma/client"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  STUDENT
+  COMPANY
+}
+
+enum Major {
+  RPL
+  TKJ
+  PPLG
+  OTHER
+}
+
+enum SkillCategory {
+  TECHNICAL
+  SOFT
+  LANGUAGE
+  FRAMEWORK
+  DATABASE
+  TOOL
+  CLOUD
+  OTHER
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWED
+  ACCEPTED
+  REJECTED
+}
+
+enum Decision {
+  ACCEPTED
+  REJECTED
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  passwordHash  String
+  role          Role      @default(STUDENT)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  studentProfile StudentProfile?
+  company       Company?
+
+  @@map("users")
+}
+
+model StudentProfile {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String
+  major     Major
+  bio       String?
+  skills    StudentSkill[]
+  applications Application[]
+  portfolioItems PortfolioItem[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("student_profiles")
+}
+
+model Company {
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  location    String?
+  website     String?
+  verified    Boolean  @default(false)
+  jobs        Job[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("companies")
+}
+
+model Skill {
+  id              String          @id @default(cuid())
+  name            String          @unique
+  category        SkillCategory   @default(TECHNICAL)
+  studentSkills   StudentSkill[]
+  jobSkills       JobSkill[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@map("skills")
+}
+
+model StudentSkill {
+  id        String   @id @default(cuid())
+  studentId String
+  student   StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  skillId   String
+  skill     Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, skillId])
+  @@map("student_skills")
+}
+
+model Job {
+  id                   String       @id @default(cuid())
+  companyId            String
+  company              Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  title                String
+  description          String
+  location             String
+  techStack            String[]
+  applicationDeadline  DateTime
+  skills               JobSkill[]
+  studyCase            StudyCase?
+  applications         Application[]
+  createdAt            DateTime     @default(now())
+  updatedAt            DateTime     @updatedAt
+
+  @@index([companyId])
+  @@map("jobs")
+}
+
+model JobSkill {
+  id        String  @id @default(cuid())
+  jobId     String
+  job       Job     @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  skillId   String
+  skill     Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([jobId, skillId])
+  @@map("job_skills")
+}
+
+model StudyCase {
+  id                String   @id @default(cuid())
+  jobId             String   @unique
+  job               Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  title             String
+  problemDescription String
+  instructions      String
+  requiredSkills    String[]
+  deadline          DateTime
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("study_cases")
+}
+
+model Application {
+  id            String             @id @default(cuid())
+  studentId     String
+  student       StudentProfile     @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  jobId         String
+  job           Job                @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  status        ApplicationStatus  @default(PENDING)
+  submission    Submission?
+  review        Review?
+  portfolioItem PortfolioItem?
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@unique([studentId, jobId])
+  @@index([studentId])
+  @@index([jobId])
+  @@map("applications")
+}
+
+model Submission {
+  id            String       @id @default(cuid())
+  applicationId String       @unique
+  application   Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  repoUrl       String
+  deployedUrl   String?
+  explanation   String
+  submittedAt   DateTime     @default(now())
+
+  @@map("submissions")
+}
+
+model Review {
+  id            String   @id @default(cuid())
+  applicationId String   @unique
+  application   Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  score         Int      // 0-100
+  feedback      String
+  decision      Decision
+  reviewedAt    DateTime @default(now())
+
+  @@map("reviews")
+}
+
+model PortfolioItem {
+  id              String   @id @default(cuid())
+  studentId       String
+  student         StudentProfile @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  applicationId   String   @unique
+  application     Application @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  studyCaseTitle  String
+  companyName     String
+  technologies    String[]
+  repoUrl         String
+  deployedUrl     String?
+  score           Int
+  feedback        String
+  result          Decision
+  createdAt       DateTime @default(now())
+
+  @@index([studentId])
+  @@map("portfolio_items")
 }

@@ -1,8 +1,8 @@
-# PKL Platform — Product Requirements Document
+# YukMagang — Product Requirements Document
 
 ## Product Overview
 
-**Product Name:** PKL Platform
+**Product Name:** YukMagang
 
 **Product Description:** A platform that helps Indonesian SMK students, especially students from RPL, TKJ, and PPLG-related majors, discover relevant PKL (industrial internship) opportunities. The key differentiation is that students can complete a real company study case as part of the application process. The completed study case becomes portfolio evidence even when the student is rejected from the PKL position.
 

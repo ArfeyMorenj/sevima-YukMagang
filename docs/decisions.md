@@ -1,4 +1,4 @@
-# PKL Platform — Architecture Decision Log
+# YukMagang — Architecture Decision Log
 
 ## ADR-001: Custom Session Auth vs NextAuth.js
 

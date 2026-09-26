@@ -1,4 +1,4 @@
-# PKL Platform — Technical Design
+# YukMagang — Technical Design
 
 ## Architecture Overview
 
