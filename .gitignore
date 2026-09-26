@@ -47,3 +47,5 @@ next-env.d.ts
 .windsurf/
 .agents/
 node_modules/
+
+cookies.txt
