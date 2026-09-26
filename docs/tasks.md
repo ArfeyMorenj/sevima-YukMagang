@@ -174,84 +174,79 @@
 
 ---
 
-## Phase 6 — Job Browsing & Applications [COMPLETED]
+## Phase 6 — Job Browsing & Applications
 
-### [P0] Build Jobs List page (/student/jobs) [DONE]
-- **Goal:** Grid of JobCards with deterministic skill match overlap, deadline, study case indicator
-- **Dependency:** Jobs seeded, student profile
-- **Definition of Done:** Shows all active jobs, real skill match calculated (no fake %), responsive grid
+### [P0] Build Jobs List page (/student/jobs)
+- **Goal:** Grid of JobCards with match %, skills, deadline
+- **Dependency:** Matching engine (basic), jobs seeded
+- **Definition of Done:** Shows all active jobs, match % calculated, responsive grid
 
-### [P0] Create getJobsWithMatch Server Action / Data Fetcher [DONE]
-- **Goal:** Fetch jobs + calculate deterministic skill match for current student
-- **Dependency:** Student skills, job skills
-- **Definition of Done:** Server component query with skills, sorted by skill match count
+### [P0] Create getJobsWithMatch Server Action / Route Handler
+- **Goal:** Fetch jobs + calculate match for current student
+- **Dependency:** Matching engine
+- **Definition of Done:** Returns Job[] with matchPercentage, matchedSkills[]
 
-### [P0] Build Job Detail page (/student/jobs/[id]) [DONE]
-- **Goal:** Full job info, prominent study case challenge, apply button
-- **Dependency:** Job data
-- **Definition of Done:** Study case displays prominently, state-aware apply creates application and navigates to workspace
+### [P0] Build Job Detail page (/student/jobs/[id])
+- **Goal:** Full job info, study case tabs, apply button
+- **Dependency:** getJobsWithMatch
+- **Definition of Done:** Tabs work, study case displays, apply creates application
 
-### [P0] Create applyToJob Server Action [DONE]
+### [P0] Create applyToJob Server Action
 - **Goal:** Create Application (PENDING), prevent duplicate
 - **Dependency:** Schema, auth
 - **Definition of Done:** Unique constraint enforced, redirects to application detail
 
-### [P0] Build Application List page (/student/applications) [DONE]
-- **Goal:** List of student's applications with status, study case callout, and empty state
+### [P0] Build Application Detail page (/student/applications/[id])
+- **Goal:** Status timeline, submission form (if PENDING), review result (if REVIEWED)
 - **Dependency:** applyToJob
-- **Definition of Done:** Real DB applications, StatusBadge, direct action CTA
-
-### [P0] Build Application Detail page (/student/applications/[id]) [DONE]
-- **Goal:** Status timeline, submission form (if not submitted), review result (if reviewed)
-- **Dependency:** applyToJob
-- **Definition of Done:** Status updates reflect, submission form shows when not submitted
+- **Definition of Done:** Status updates reflect, submission form shows when PENDING
 
 ---
 
-## Phase 7 — Study Case Submission [COMPLETED]
+## Phase 7 — Study Case Submission
 
-### [P0] Create submitStudyCase Server Action [DONE]
-- **Goal:** Create Submission, validate URLs and explanation
-- **Dependency:** Application exists, student ownership
-- **Definition of Done:** Validates repo URL, deployed URL, explanation (min 50 chars); creates Submission; revalidates path
+### [P0] Create submitStudyCase Server Action
+- **Goal:** Create Submission, update Application status → REVIEWED
+- **Dependency:** Application exists, PENDING status
+- **Definition of Done:** Validates URLs, explanation; creates Submission; updates status
 
-### [P0] Build Submission Form (in Application Detail) [DONE]
-- **Goal:** Repo URL, Deployed URL, Explanation textarea with live counter and clear human evaluation notice
+### [P0] Build Submission Form (in Application Detail)
+- **Goal:** Repo URL, Deployed URL, Explanation textarea
 - **Dependency:** submitStudyCase
-- **Definition of Done:** Validation works, submits, refreshes application detail with success state
+- **Definition of Done:** Validation works, submits, redirects to application detail with success
 
 ---
 
-## Phase 8 — Company Review
+## Phase 8 — Company Review [COMPLETED]
 
-### [P0] Build Applicant List (/company/jobs/[id]/applicants)
-- **Goal:** Table of applicants with status, match %, actions
+### [P0] Build Applicant List (/company/jobs/[id]/applicants) [DONE]
+- **Goal:** List of applicants with status, registered skills, submission state, review action
 - **Dependency:** Jobs with applications
-- **Definition of Done:** Lists all, links to review page
+- **Definition of Done:** Lists company's applicants, verifies company ownership, links to review page
 
-### [P0] Build Submission Review page (/company/applications/[id]/review)
-- **Goal:** View submission, score input, feedback textarea, accept/reject radio
+### [P0] Build Submission Review page (/company/applications/[id]/review) [DONE]
+- **Goal:** View student identity, job, study case, submission details, score input, feedback textarea, decision cards
 - **Dependency:** Applications with submissions
-- **Definition of Done:** Shows repo, deployed, explanation; form submits review
+- **Definition of Done:** Shows repo, deployed, explanation; form submits review, pre-fills existing review
 
-### [P0] Create reviewApplication Server Action
+### [P0] Create reviewApplication Server Action [DONE]
 - **Goal:** Create Review, update Application status, create PortfolioItem
-- **Dependency:** Company owns job, application exists
-- **Definition of Done:** Transactional: Review + Application status + PortfolioItem all created; score 0-100 validated
+- **Dependency:** Company owns job, application exists, submission exists
+- **Definition of Done:** Transactional: Review + Application status + PortfolioItem all created atomically; score 0-100 validated
 
 ---
 
-## Phase 9 — Portfolio
+## Phase 9 — Portfolio [COMPLETED]
 
-### [P0] Build Portfolio page (/student/portfolio)
-- **Goal:** Grid of PortfolioCards with all required fields
+### [P0] Build Portfolio page (/student/portfolio) [DONE]
+- **Goal:** Grid of PortfolioCards with all required verified evidence fields
 - **Dependency:** reviewApplication creates PortfolioItem
-- **Definition of Done:** Shows study case title, company, technologies, repo, deployed, score, feedback, result badge
+- **Definition of Done:** Shows study case title, company, technologies, repo, deployed, score, feedback, result badge, empty state
 
-### [P0] Verify rejected applications create portfolio
+### [P0] Verify rejected applications create portfolio [DONE]
 - **Goal:** Core differentiator works
 - **Dependency:** reviewApplication
-- **Definition of Done:** Reject decision still creates PortfolioItem with result=REJECTED
+- **Definition of Done:** Reject decision still creates PortfolioItem with result=REJECTED (verified evidence)
 
 ---
 

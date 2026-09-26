@@ -5,7 +5,6 @@ import {
   Calendar,
   FileCode,
   ArrowRight,
-  Clock,
   CheckCircle2,
   AlertCircle,
   Briefcase,
