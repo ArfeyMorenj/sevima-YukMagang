@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Avatar } from '@/components/ui/Avatar'
+import { BrandLogo } from '@/components/ui/BrandLogo'
 import { logout } from '@/app/actions/auth'
 import { Menu, X, LogOut, Briefcase, Plus, Building2, Settings } from 'lucide-react'
 
@@ -37,8 +38,19 @@ export function CompanyLayout({ children, user }: CompanyLayoutProps) {
         setMobileMenuOpen(false)
       }
     }
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false)
+        setUserMenuOpen(false)
+      }
+    }
+
     window.addEventListener('resize', handleResize)
-    return () => window.removeEventListener('resize', handleResize)
+    window.addEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('resize', handleResize)
+      window.removeEventListener('keydown', handleKeyDown)
+    }
   }, [])
 
   const initials = user.companyName
@@ -69,19 +81,7 @@ export function CompanyLayout({ children, user }: CompanyLayoutProps) {
       >
         {/* Header */}
         <div className="p-4 border-b border-border flex items-center justify-between">
-          <Link
-            href="/company"
-            className="flex items-center gap-2.5 font-semibold text-lg text-foreground"
-            onClick={() => setMobileMenuOpen(false)}
-          >
-            <span className="w-8 h-8 rounded-md bg-brand-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
-              YM
-            </span>
-            <span>YukMagang</span>
-            <span className="text-2xs uppercase px-1.5 py-0.5 rounded bg-base-200 text-base-700 font-semibold tracking-wide">
-              Industri
-            </span>
-          </Link>
+          <BrandLogo href="/company" badge="Industri" onClick={() => setMobileMenuOpen(false)} />
           <button
             onClick={() => setMobileMenuOpen(false)}
             className="p-1.5 rounded-md hover:bg-muted text-muted-foreground transition-colors"
@@ -100,7 +100,7 @@ export function CompanyLayout({ children, user }: CompanyLayoutProps) {
               <div className="flex items-center gap-2">
                 <span className="text-caption text-muted-foreground truncate">{user.email}</span>
                 {user.verified && (
-                  <span className="text-2xs text-success bg-success-light px-1.5 py-0.2 rounded font-medium">Terverifikasi</span>
+                  <span className="text-2xs text-success bg-success-light px-1.5 py-0.5 rounded font-medium">Terverifikasi</span>
                 )}
               </div>
             </div>
@@ -159,15 +159,7 @@ export function CompanyLayout({ children, user }: CompanyLayoutProps) {
             </button>
 
             {/* Brand */}
-            <Link href="/company" className="flex items-center gap-2.5 font-semibold text-lg text-foreground">
-              <span className="w-8 h-8 rounded-md bg-brand-600 text-white flex items-center justify-center font-bold text-xs shadow-xs">
-                YM
-              </span>
-              <span className="font-semibold tracking-tight">YukMagang</span>
-              <span className="hidden sm:inline-block text-2xs uppercase px-1.5 py-0.5 rounded bg-base-200 text-base-700 font-semibold tracking-wide ml-1">
-                Industri
-              </span>
-            </Link>
+            <BrandLogo href="/company" badge="Industri" />
           </div>
 
           {/* Desktop Navigation */}
