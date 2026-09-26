@@ -174,46 +174,51 @@
 
 ---
 
-## Phase 6 — Job Browsing & Applications
+## Phase 6 — Job Browsing & Applications [COMPLETED]
 
-### [P0] Build Jobs List page (/student/jobs)
-- **Goal:** Grid of JobCards with match %, skills, deadline
-- **Dependency:** Matching engine (basic), jobs seeded
-- **Definition of Done:** Shows all active jobs, match % calculated, responsive grid
+### [P0] Build Jobs List page (/student/jobs) [DONE]
+- **Goal:** Grid of JobCards with deterministic skill match overlap, deadline, study case indicator
+- **Dependency:** Jobs seeded, student profile
+- **Definition of Done:** Shows all active jobs, real skill match calculated (no fake %), responsive grid
 
-### [P0] Create getJobsWithMatch Server Action / Route Handler
-- **Goal:** Fetch jobs + calculate match for current student
-- **Dependency:** Matching engine
-- **Definition of Done:** Returns Job[] with matchPercentage, matchedSkills[]
+### [P0] Create getJobsWithMatch Server Action / Data Fetcher [DONE]
+- **Goal:** Fetch jobs + calculate deterministic skill match for current student
+- **Dependency:** Student skills, job skills
+- **Definition of Done:** Server component query with skills, sorted by skill match count
 
-### [P0] Build Job Detail page (/student/jobs/[id])
-- **Goal:** Full job info, study case tabs, apply button
-- **Dependency:** getJobsWithMatch
-- **Definition of Done:** Tabs work, study case displays, apply creates application
+### [P0] Build Job Detail page (/student/jobs/[id]) [DONE]
+- **Goal:** Full job info, prominent study case challenge, apply button
+- **Dependency:** Job data
+- **Definition of Done:** Study case displays prominently, state-aware apply creates application and navigates to workspace
 
-### [P0] Create applyToJob Server Action
+### [P0] Create applyToJob Server Action [DONE]
 - **Goal:** Create Application (PENDING), prevent duplicate
 - **Dependency:** Schema, auth
 - **Definition of Done:** Unique constraint enforced, redirects to application detail
 
-### [P0] Build Application Detail page (/student/applications/[id])
-- **Goal:** Status timeline, submission form (if PENDING), review result (if REVIEWED)
+### [P0] Build Application List page (/student/applications) [DONE]
+- **Goal:** List of student's applications with status, study case callout, and empty state
 - **Dependency:** applyToJob
-- **Definition of Done:** Status updates reflect, submission form shows when PENDING
+- **Definition of Done:** Real DB applications, StatusBadge, direct action CTA
+
+### [P0] Build Application Detail page (/student/applications/[id]) [DONE]
+- **Goal:** Status timeline, submission form (if not submitted), review result (if reviewed)
+- **Dependency:** applyToJob
+- **Definition of Done:** Status updates reflect, submission form shows when not submitted
 
 ---
 
-## Phase 7 — Study Case Submission
+## Phase 7 — Study Case Submission [COMPLETED]
 
-### [P0] Create submitStudyCase Server Action
-- **Goal:** Create Submission, update Application status → REVIEWED
-- **Dependency:** Application exists, PENDING status
-- **Definition of Done:** Validates URLs, explanation; creates Submission; updates status
+### [P0] Create submitStudyCase Server Action [DONE]
+- **Goal:** Create Submission, validate URLs and explanation
+- **Dependency:** Application exists, student ownership
+- **Definition of Done:** Validates repo URL, deployed URL, explanation (min 50 chars); creates Submission; revalidates path
 
-### [P0] Build Submission Form (in Application Detail)
-- **Goal:** Repo URL, Deployed URL, Explanation textarea
+### [P0] Build Submission Form (in Application Detail) [DONE]
+- **Goal:** Repo URL, Deployed URL, Explanation textarea with live counter and clear human evaluation notice
 - **Dependency:** submitStudyCase
-- **Definition of Done:** Validation works, submits, redirects to application detail with success
+- **Definition of Done:** Validation works, submits, refreshes application detail with success state
 
 ---
 
